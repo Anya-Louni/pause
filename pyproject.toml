@@ -1,0 +1,20 @@
+[project]
+name = "pause"
+version = "0.1.0"
+description = "A task agent that asks before it acts when it is unsure."
+requires-python = ">=3.12"
+dependencies = [
+    "langchain>=1.4.3",
+    "langchain-core>=1.6.5",
+    "langchain-google-genai>=4.4.0",
+    "langchain-tavily>=0.2.18",
+    "langgraph>=1.2.12",
+    "langgraph-checkpoint-sqlite>=3.1.1",
+    "python-dotenv>=1.2.3",
+]
+
+[dependency-groups]
+dev = [
+    "langchain-tests>=1.1.9",
+    "pytest>=9.1.1",
+]
