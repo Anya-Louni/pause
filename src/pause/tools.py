@@ -7,7 +7,7 @@ a real workspace notify other people and cannot be taken back.
 
 import json
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timedelta
 from functools import cache
 from typing import Any
 
@@ -17,7 +17,7 @@ from langchain_tavily import TavilySearch
 from langchain_uncertainty_gate import Risk
 from pause import dates
 from pause.untrusted import wrap
-from pause.workspace import NotFound, Workspace, seed
+from pause.workspace import NotFound, Workspace, monday_of, seed
 
 
 @dataclass
@@ -90,14 +90,23 @@ def find_contact(name: str, runtime: ToolRuntime[PauseContext]) -> str:
 
 
 @tool
-def list_events(start: str, end: str, runtime: ToolRuntime[PauseContext]) -> str:
-    """List calendar events that start between two ISO dates (start inclusive, end exclusive).
+def list_events(
+    runtime: ToolRuntime[PauseContext], start: str | None = None, end: str | None = None
+) -> str:
+    """List calendar events with their ids, ordered by start time.
+
+    With no arguments it returns this week and the two weeks after it, which is
+    usually what you need to find an event the user mentions.
 
     Args:
-        start: ISO date or datetime, for example "2026-10-05".
-        end: ISO date or datetime, for example "2026-10-12".
+        start: Optional ISO date, inclusive, for example "2026-10-05".
+        end: Optional ISO date, exclusive, for example "2026-10-12".
     """
-    return _json(workspace_of(runtime.context).events(start, end))
+    today = datetime.fromisoformat(runtime.context.now).date()
+    monday = monday_of(today)
+    first = start or monday.isoformat()
+    last = end or (monday + timedelta(days=21)).isoformat()
+    return _json(workspace_of(runtime.context).events(first, last))
 
 
 @tool

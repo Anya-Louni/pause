@@ -128,7 +128,7 @@ class Workspace:
         with self._lock:
             old = self.event(event_id)
             length = datetime.fromisoformat(old["end"]) - datetime.fromisoformat(old["start"])
-            new_end = (datetime.fromisoformat(new_start) + length).isoformat()
+            new_end = (datetime.fromisoformat(new_start) + length).isoformat(timespec="minutes")
             self._db.execute(
                 "UPDATE events SET start = ?, end = ? WHERE id = ?", (new_start, new_end, event_id)
             )

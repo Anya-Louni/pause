@@ -18,7 +18,7 @@ def test_events_filter_by_start(workspace: Workspace) -> None:
 
 def test_move_keeps_length_and_can_be_undone(workspace: Workspace) -> None:
     moved = workspace.move_event("e3", "2026-10-09T15:00", NOW)
-    assert (moved["start"], moved["end"]) == ("2026-10-09T15:00", "2026-10-09T15:30:00")
+    assert (moved["start"], moved["end"]) == ("2026-10-09T15:00", "2026-10-09T15:30")
     assert workspace.undo_last() == "Moved event 'Dentist'"
     assert workspace.event("e3")["start"] == "2026-10-07T16:00"
 
