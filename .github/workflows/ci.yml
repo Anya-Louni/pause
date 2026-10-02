@@ -1,0 +1,18 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked --all-packages
+      - run: uv run ruff check src tests packages scripts
+      - run: uv run ruff format --check src tests packages scripts
+      - run: uv run mypy src packages/uncertainty-gate/src
+      - run: uv run pytest -q

@@ -27,3 +27,13 @@ Confirmed on 2026-09-29 against the installed packages.
 - Content blocks in `langchain_core.messages.content`: `TextContentBlock`, `ImageContentBlock`, `AudioContentBlock`, `FileContentBlock` and others.
 - Model profiles: `BaseChatModel.profile`. `ChatGoogleGenerativeAI(model="gemini-2.5-flash").profile` reports `tool_calling`, `structured_output`, `image_inputs`, `audio_inputs`, `max_input_tokens` and more. Source data ships in `langchain_google_genai/data/_profiles.py` and `profile_augmentations.toml`.
 - `langchain-tests` ships suites for chat models, tools, embeddings, stores, caches, retrievers, vector stores and sandboxes. It has no middleware suite.
+- `AgentMiddleware.wrap_model_call(request, handler)` may call `handler` more than once. The uncertainty gate uses this to sample extra proposals. `request.override(model_settings={...})` passes settings such as `temperature` to `bind_tools`.
+- `ExtendedModelResponse(model_response, command)` lets `wrap_model_call` return a state update. The gate uses it to append to `gate_log`.
+- `dynamic_prompt` builds the system prompt per model call from `request.runtime.context`. Used to add the run's clock.
+- `create_agent(context_schema=...)` and `ToolRuntime[Context]` pass per-run facts (now, timezone, workspace file) to tools.
+- `ToolErrorMiddleware`, `InMemoryRateLimiter`: as in Claimcheck.
+
+## Gemini API facts checked on 2026-10-02
+
+- `gemini-3.1-flash-lite` accepts `temperature`. `gemini-3.5-flash-lite` uses fixed sampling and ignores it with a warning.
+- Flash models allow 20 requests a day on the free tier, so the agent runs on Flash-Lite.
