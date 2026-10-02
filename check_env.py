@@ -15,7 +15,7 @@ def main() -> int:
         print(f"Missing keys: {', '.join(missing)}")
         return 1
 
-    model_name = os.getenv("MODEL", "google_genai:gemini-3.8-flash")
+    model_name = os.getenv("MODEL", "google_genai:gemini-3.1-flash-lite")
     reply = init_chat_model(model_name).invoke("Reply with the single word: ready")
     print(f"model {model_name}: {reply.text.strip()}")
 

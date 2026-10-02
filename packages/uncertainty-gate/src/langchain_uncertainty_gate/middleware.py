@@ -104,7 +104,7 @@ class UncertaintyGateMiddleware(AgentMiddleware[GateState]):
 
     def _proposal(self, response: ModelResponse) -> Proposal:
         message = _ai_message(response)
-        calls = list(message.tool_calls) if message else []
+        calls = [dict(c) for c in message.tool_calls] if message else []
         return build_proposal(calls, self._risk_of, self.canonicalize)
 
     def _is_risky(self, response: ModelResponse) -> bool:
